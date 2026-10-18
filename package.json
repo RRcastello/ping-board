@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Not needed to run the site; only tells Node that js/*.js are ES modules for the tests.",
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/phone.test.mjs",
     "check": "node scripts/check-config.mjs"
   }
 }

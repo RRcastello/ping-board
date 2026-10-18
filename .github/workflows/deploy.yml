@@ -28,7 +28,7 @@ jobs:
         run: node scripts/check-config.mjs
 
       - name: Test phone validation
-        run: node --test tests/
+        run: node --test tests/phone.test.mjs
 
       - name: Collect site files
         run: |
