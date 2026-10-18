@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Only this site and Supabase may be contacted. If you use a custom Supabase
+       domain, add it to connect-src. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Ping Board</title>
+  <meta name="description" content="Your private WhatsApp quick-message buttons.">
+  <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101214" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Ping Board">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon.svg" alt="" width="28" height="28">
+      <span>Ping Board</span>
+    </div>
+    <button id="signout-btn" class="btn btn-ghost btn-small" type="button" hidden>Sign out</button>
+  </header>
+
+  <main>
+    <section id="view-loading" class="view">
+      <p class="muted center">Loading…</p>
+    </section>
+
+    <section id="view-setup" class="view" hidden>
+      <div class="card">
+        <h1>Almost there</h1>
+        <p id="setup-msg">Add your Supabase URL and anon key to <code>js/config.js</code>. See the README, step 6.</p>
+      </div>
+    </section>
+
+    <section id="view-login" class="view" hidden>
+      <div class="card">
+        <h1>Sign in</h1>
+        <form id="login-form" novalidate>
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" inputmode="email" required>
+          <button class="btn btn-primary btn-block" type="submit">Email me a login link</button>
+        </form>
+
+        <div id="login-sent" hidden>
+          <p>If <strong id="sent-to"></strong> is allowed to use Ping Board, a login email is on its way.</p>
+          <p class="muted">Tap the link in the email, or type the code from it here. Use the code if you opened Ping Board from your home screen.</p>
+          <form id="code-form" novalidate>
+            <label for="login-code">Code from the email</label>
+            <input id="login-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="10" required>
+            <button class="btn btn-primary btn-block" type="submit">Sign in with code</button>
+          </form>
+          <button id="login-restart" class="btn btn-ghost btn-block" type="button">Use a different email</button>
+        </div>
+
+        <p id="login-msg" class="msg" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="view-board" class="view" hidden>
+      <p id="board-msg" class="msg" role="status" aria-live="polite"></p>
+      <div id="board-list" class="board"></div>
+      <div id="board-empty" class="card center" hidden>
+        <h1>No buttons yet</h1>
+        <p class="muted">Make one for a message you send often, like “On my way”.</p>
+      </div>
+      <button id="add-btn" class="btn btn-primary btn-block btn-add" type="button">+ New button</button>
+      <p id="user-line" class="muted center small"></p>
+    </section>
+  </main>
+
+  <dialog id="edit-dialog" aria-labelledby="edit-title">
+    <form id="edit-form" novalidate>
+      <h2 id="edit-title">New button</h2>
+
+      <label for="f-label">Button label</label>
+      <input id="f-label" name="label" type="text" maxlength="60" placeholder="On my way" required>
+      <p class="field-error" data-for="label"></p>
+
+      <label for="f-contact">Contact name <span class="muted">(optional)</span></label>
+      <input id="f-contact" name="contact_name" type="text" maxlength="80" placeholder="Sam" autocomplete="off">
+      <p class="field-error" data-for="contact_name"></p>
+
+      <label for="f-phone">WhatsApp number with country code</label>
+      <input id="f-phone" name="phone" type="tel" inputmode="tel" placeholder="+31 6 12345678" autocomplete="off" required>
+      <p id="phone-hint" class="hint"></p>
+      <p class="field-error" data-for="phone"></p>
+
+      <label for="f-message">Message</label>
+      <textarea id="f-message" name="message" rows="4" maxlength="1000" placeholder="On my way, see you in 10 minutes!" required></textarea>
+      <p class="field-error" data-for="message"></p>
+
+      <p id="edit-msg" class="msg" role="status" aria-live="polite"></p>
+
+      <div class="dialog-actions">
+        <button id="edit-cancel" class="btn btn-ghost" type="button">Cancel</button>
+        <button id="edit-save" class="btn btn-primary" type="submit">Save</button>
+      </div>
+      <button id="edit-delete" class="btn btn-danger btn-block" type="button" hidden>Delete this button</button>
+    </form>
+  </dialog>
+
+  <script src="vendor/supabase-js-2.117.2.js"
+          integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

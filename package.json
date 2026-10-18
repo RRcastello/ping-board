@@ -1,0 +1,10 @@
+{
+  "name": "ping-board",
+  "private": true,
+  "type": "module",
+  "description": "Not needed to run the site; only tells Node that js/*.js are ES modules for the tests.",
+  "scripts": {
+    "test": "node --test tests/",
+    "check": "node scripts/check-config.mjs"
+  }
+}
