@@ -42,7 +42,9 @@ function scan(path) {
   }
   if (!/\.(js|mjs|html|json|webmanifest|css|svg)$/.test(path)) return;
   const text = readFileSync(path, 'utf8');
-  if (text.includes('sb_secret_')) fail(`${path} contains an sb_secret_ key.`);
+  // A real key has a long random part after the prefix (the bare prefix also
+  // appears in the code that detects secret keys, which is fine).
+  if (/sb_secret_[A-Za-z0-9_-]{16,}/.test(text)) fail(`${path} contains an sb_secret_ key.`);
   for (const m of text.match(jwtLike) ?? []) {
     if (isSecret(m)) fail(`${path} contains a service_role key.`);
   }
