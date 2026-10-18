@@ -7,5 +7,5 @@
 //
 // NEVER put the "service_role" or "secret" (sb_secret_...) key here. The app
 // refuses to start if you do, and the deploy workflow fails.
-export const SUPABASE_URL = 'https://ugzncqozfvfpufyuxyeq.supabase.co/rest/v1/';
+export const SUPABASE_URL = 'https://ugzncqozfvfpufyuxyeq.supabase.co';
 export const SUPABASE_ANON_KEY = 'sb_publishable_vDhuEjKpgZKzqkveymbeyw_JKZWW24v';

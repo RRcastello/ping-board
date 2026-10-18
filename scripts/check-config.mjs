@@ -14,7 +14,7 @@ if (SUPABASE_URL.includes('YOUR-PROJECT-REF') || SUPABASE_ANON_KEY.startsWith('Y
   fail('Fill in SUPABASE_URL and SUPABASE_ANON_KEY in js/config.js (README step 6).');
 }
 if (!/^https:\/\/[^/]+$/.test(SUPABASE_URL.replace(/\/$/, ''))) {
-  fail('SUPABASE_URL should look like https://abcdefgh.supabase.co');
+  fail('SUPABASE_URL should look like https://abcdefgh.supabase.co, with nothing after .co (remove any /rest/v1/).');
 }
 
 function isSecret(key) {

@@ -127,6 +127,7 @@ Capital letters and extra spaces are cleaned up automatically.
 2. Copy:
    - the **Project URL**, which looks like `https://abcdefghijkl.supabase.co`
      (shown under *Data API*, or on the project's home page under *Connect*).
+     Use just that part: if what you copied ends in `/rest/v1/`, delete that.
    - the **public** key: either the **publishable** key (starts with
      `sb_publishable_`) or the legacy **anon public** key (a long text
      starting with `eyJ`). Either one works.
